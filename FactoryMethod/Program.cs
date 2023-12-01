@@ -11,7 +11,11 @@ namespace FactoryMethod
         static void Main(string[] args)
         {
 
-                
+            CustomerManagaer customerManagaer = new CustomerManagaer(new LoggerFactory2());
+            customerManagaer.Save();
+
+            Console.ReadLine();
+            Console.ReadLine();
         }
 
     }
@@ -23,8 +27,17 @@ namespace FactoryMethod
         }
     }
 
+    public class LoggerFactory2 : ILoggerFactory
+    {
+        public ILogger CreateLogger()
+        {
+            return new LogFNetLogger();
+        }
+    }
+
     public interface ILoggerFactory
     {
+        ILogger CreateLogger();
     }
 
     public interface ILogger
@@ -36,15 +49,35 @@ namespace FactoryMethod
         public void Log()
         {
             Console.WriteLine("Logged with EdLoger");
+           
+        }
+
+    }
+    public class LogFNetLogger : ILogger
+    {
+        public void Log()
+        {
+            Console.WriteLine("Logged with LogFNetLogger");
+           
         }
 
     }
     public class CustomerManagaer
+
+
     {
+        private ILoggerFactory _loggerFactory;
+        public CustomerManagaer(ILoggerFactory loggerFactory)
+        {
+            _loggerFactory = loggerFactory;
+        }
+
         public void Save()
         {
             Console.WriteLine("Saved");
-            ILogger logger = new EdLogger();
+            
+            ILogger logger = _loggerFactory.CreateLogger();
+            logger.Log();
         }
     }
 }
