@@ -11,7 +11,9 @@ namespace Facade
     {
         static void Main(string[] args)
         {
-
+            CustomerManager customerManager = new CustomerManager();
+            customerManager.Save();
+            Console.ReadLine();
         }
 
     }
@@ -37,7 +39,7 @@ namespace Facade
 
         }
 
-    internal interface ICaching
+     interface ICaching
     {
         void Cache();
     }
@@ -56,23 +58,53 @@ namespace Facade
         void CheckUser();
     }
 }
+class Validation : IValidate
+{
+    public void Validate()
+    {
+        Console.WriteLine("Validated");
+    }
+
+}
+
+internal interface IValidate
+{
+    void Validate();
+}
+
     class CustomerManager
     {
-    private ILogging _logging;
-    ICaching _caching;
-    IAuthorize _authorize;
-    public CustomerManager(ILogging logging, ICaching caching, IAuthorize authorize)
+    private CrossCuttonConsernsFasade _concerns;
+    public CustomerManager()
     {
-        _logging = logging;
-        _caching = caching;
-        _authorize = authorize;
+       
     }
     public void Save()
     {
-        _logging.Log();
-        _caching.Cache();
-        _authorize.CheckUser();
+        _concerns.Caching.Cache();
+        _concerns.Authorize.CheckUser();
+        _concerns.Logging.Log();
+        _concerns.Validation.Validate();
         Console.WriteLine("Saved");
+    }
+    class CrossCuttonConsernsFasade
+    {
+       public  ILogging Logging;
+       public ICaching Caching;
+       public IAuthorize Authorize;
+       public IValidate Validation;
+
+        public CrossCuttonConsernsFasade()
+        {
+           
+         Logging = new Logging();
+         Caching = new Caching();
+
+        Authorize = new Authorize();
+        Validation = new Validation();
+        }
+
+        
     }
 }
 
